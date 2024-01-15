@@ -1,110 +1,107 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import axios from 'axios';
+import {reactLocalStorage} from "reactjs-localstorage";
 
 const RegisterPage = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [userData, setUserData] = useState({
+    username: '',
+    email: '',
+    password: '',
+  });
 
-  const handleRegister = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
+
+    try {
+      const formData = new FormData();
+      formData.append('username', userData.username);
+      formData.append('name', userData.name);
+      formData.append('email', userData.email);
+      formData.append('password', userData.password);
+
+      // Make a POST request to your registration endpoint
+
+      const response = await axios.post('register', formData);
+      console.log(response.data.message);
+
+      axios.post('login', formData);
+      reactLocalStorage.set("token", response.data.token);
+
+      // Clear the form fields after successful registration
+      setUserData({
+        username: '',
+        name:'',
+        email: '',
+        password: '',
+      });
+
+    } catch (error) {
+      // Handle errors, you might want to show an error message to the user
+      console.log(error)
+      console.log(error.response.data.message);
+    }
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>Register</h1>
-      <form onSubmit={handleRegister} style={styles.form}>
-        <label htmlFor="username" style={styles.label}>
-          Username:
-        </label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={styles.input}
-          required
-        /><br /><br />
-
-        <label htmlFor="email" style={styles.label}>
-          Email:
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-          required
-        /><br /><br />
-
-        <label htmlFor="password" style={styles.label}>
-          Password:
-        </label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-          required
-        /><br /><br />
-
-        <label htmlFor="confirm-password" style={styles.label}>
-          Confirm Password:
-        </label>
-        <input
-          type="password"
-          id="confirm-password"
-          name="confirm-password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          style={styles.input}
-          required
-        /><br /><br />
-
-        <button type="submit" style={styles.button}>Register</button>
+    <div>
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={userData.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={userData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={userData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={userData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">Register</button>
       </form>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-  },
-  heading: {
-    fontSize: "24px",
-    marginBottom: "20px",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  label: {
-    marginBottom: "10px",
-  },
-  input: {
-    padding: "8px",
-    marginBottom: "10px",
-    width: "200px",
-  },
-  button: {
-    padding: "8px 16px",
-    backgroundColor: "blue",
-    color: "white",
-    border: "none",
-    cursor: "pointer",
-  },
 };
 
 export default RegisterPage;
