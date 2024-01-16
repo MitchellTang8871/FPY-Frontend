@@ -3,10 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { reactLocalStorage } from "reactjs-localstorage";
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -25,17 +24,15 @@ const RegisterPage = () => {
     try {
       const formData = new FormData();
       formData.append("username", userData.username);
-      formData.append("name", userData.name);
-      formData.append("email", userData.email);
       formData.append("password", userData.password);
 
-      // Make a POST request to your registration endpoint
+      // Make a POST request to your login endpoint
 
-      const response = await axios.post("register", formData);
+      const response = await axios.post("login", formData);
       console.log(response.data.message);
 
-      axios.post("login", formData);
       reactLocalStorage.set("token", response.data.token);
+
       // Redirect to /home
       navigate("/home");
     } catch (error) {
@@ -47,37 +44,15 @@ const RegisterPage = () => {
 
   return (
     <div>
-      <h2>Register</h2>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username:</label>
           <input
-            type="text"
+            type="username"
             id="username"
             name="username"
             value={userData.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={userData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={userData.email}
             onChange={handleChange}
             required
           />
@@ -93,11 +68,11 @@ const RegisterPage = () => {
             required
           />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
       </form>
-      <div>Already have an account? <a href="/">Login</a> now !</div>
+      <div>Don't have an account? <a href="/register">Register</a> now !</div>
     </div>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
