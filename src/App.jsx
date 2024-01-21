@@ -10,7 +10,7 @@ import LoginPage from './pages/Login'
 
 function App() {
     useEffect(() => {
-        // axios.defaults.baseURL = ` https://8346-2001-e68-7d83-e701-3dbd-59a9-e21a-9060.ngrok-free.app`
+        // axios.defaults.baseURL = `https://a186-2001-e68-7d83-e701-4120-9861-23c8-89b6.ngrok-free.app`
         axios.defaults.baseURL = `http://localhost:8000`
         axios.defaults.timeout = 15000
     }, []);
