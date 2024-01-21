@@ -1,15 +1,18 @@
-import {useState, useEffect} from 'react'
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { reactLocalStorage } from "reactjs-localstorage";
+import WebcamCapture from "../components/WebcamCapture";
 import qs from 'qs';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
+  const [imageFile, setImageFile] = useState(null);
 
   const checkToken = async () => {
     if (reactLocalStorage.get("token")) {
@@ -20,7 +23,8 @@ const LoginPage = () => {
           // Token is valid
           navigate("/home");
         } else {
-           // Token is invalid
+          // Token is invalid
+          alert("Invalid token. Please log in again.");
           reactLocalStorage.clear();
         }
       } catch (error) {
@@ -47,12 +51,15 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
+
       const formData = new FormData();
       formData.append("username", userData.username);
       formData.append("password", userData.password);
+      formData.append("image", imageFile);
 
       // Make a POST request to login endpoint
-      const response = await axios.post("login", formData);
+      const response = await axios.post("login", formData, {timeout:30000});
       console.log(response.data.message);
 
       reactLocalStorage.set("token", response.data.token);
@@ -63,13 +70,27 @@ const LoginPage = () => {
       // Handle errors, you might want to show an error message to the user
       console.log(error);
       console.log(error.response.data.message);
+      if (error.response.data.message) {
+        alert(error.response.data.message);
+      }
+    } finally {
+      setLoading(false); // Set loading to false after the request is complete
     }
   };
 
   return (
     <div>
+      {loading && (
+        <div className="overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
+        <WebcamCapture
+            onCapture={(file)=>setImageFile(file)}
+            onCancel={()=>setImageFile(null)}
+        />
         <div>
           <label htmlFor="username">Username:</label>
           <input
@@ -92,7 +113,8 @@ const LoginPage = () => {
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={!imageFile || loading}>Login</button>
+        {loading && <p>Loading...</p>} {/* Display loading indicator if loading is true */}
       </form>
       <div>
         Don't have an account? <a href="/register">Register</a> now !
