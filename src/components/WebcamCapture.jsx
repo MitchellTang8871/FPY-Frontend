@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 
-const WebcamCapture = ({ onCapture, onCancel }) => {
+const WebcamCapture = ({ onCapture, onCancel, onReload, live=false, }) => {
   const webcamRef = useRef(null);
   const [isCameraAvailable, setIsCameraAvailable] = useState(true);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -34,23 +34,39 @@ const WebcamCapture = ({ onCapture, onCancel }) => {
     }
   };
 
-  useEffect(() => {
+  const checkCameraAvailability = () => {
     if (webcamRef.current) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
           webcamRef.current.video.srcObject = stream;
           webcamRef.current.video.play();
-          setIsCameraAvailable(true);
           onUserMedia();
         })
         .catch((err) => {
           console.error("Failed to request webcam access:", err);
-          setIsCameraAvailable(false);
           onUserMediaError(err);
         });
     }
+  }
+
+  useEffect(() => {
+    checkCameraAvailability();
   }, []);
+
+  useEffect(() => {
+    let captureInterval;
+
+    if (isCameraAvailable && live) {
+      // Start capturing every 3 seconds
+      captureInterval = setInterval(()=>handleCapture(), 3000);
+    }
+
+    return () => {
+      // Clear the interval when the component unmounts or isCameraAvailable becomes false
+      clearInterval(captureInterval);
+    };
+  }, [isCameraAvailable, live]);
 
   const handleCapture = () => {
     if (isCameraAvailable && webcamRef.current) {
@@ -101,20 +117,34 @@ const WebcamCapture = ({ onCapture, onCancel }) => {
           <div>
             <p>Camera is not available. Please check your camera settings and try again.</p>
           </div>
-          <button type="button" onClick={() => window.location.reload()}>
+          <button type="button" onClick={onReload}>
             Reload
           </button>
         </>
-        ) : (
+      ) : (
+        live ? (
           <div>
-            {capturedImage ? (
-              <div>
-                <div><img src={capturedImage} alt="Captured" /></div>
-                <button type="button" onClick={handleCancelCapture}>
-                  Cancel
-                </button>
-              </div>
-            ) : (
+            <div>
+              <Webcam
+                ref={webcamRef}
+                screenshotFormat="image/png"
+                audio={false}
+                mirrored={true}
+                onUserMediaError={onUserMediaError}
+                onUserMedia={onUserMedia}
+              />
+            </div>
+          </div>
+        ) : (
+          capturedImage ? (
+            <div>
+              <div><img src={capturedImage} alt="Captured" /></div>
+              <button type="button" onClick={handleCancelCapture}>
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div>
               <div>
                 <div>
                   <Webcam
@@ -131,9 +161,10 @@ const WebcamCapture = ({ onCapture, onCancel }) => {
                 </button>
                 <input type="file" accept="image/*" onChange={handleUpload} />
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )
+        )
+      )}
     </div>
   );
 };

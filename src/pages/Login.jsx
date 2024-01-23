@@ -9,10 +9,14 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({
-    username: "",
-    password: "",
+    username: "test",
+    password: "test",
   });
   const [imageFile, setImageFile] = useState(null);
+  const [captureFace, setCaptureFace] = useState(false);
+  const [formIsValid, setFormIsValid] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+
 
   const checkToken = async () => {
     if (reactLocalStorage.get("token")) {
@@ -39,6 +43,20 @@ const LoginPage = () => {
     checkToken();
   }, []);
 
+  useEffect(() => {
+    const form = document.querySelector('form');
+    if (form) {
+      setFormIsValid(form.checkValidity());
+    }
+  }, [userData.username, userData.password]);
+
+  useEffect(() => {
+    // Check if imageFile is not null and call handleSubmit
+    if (imageFile) {
+      handleSubmit();
+    }
+  }, [imageFile]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
@@ -48,7 +66,10 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // Check if the event object is provided
+    if (e) {
+      e.preventDefault();
+    }
 
     try {
       setLoading(true);
@@ -73,6 +94,7 @@ const LoginPage = () => {
       if (error.response.data.message) {
         alert(error.response.data.message);
       }
+      setImageFile(null);
     } finally {
       setLoading(false); // Set loading to false after the request is complete
     }
@@ -86,39 +108,51 @@ const LoginPage = () => {
         </div>
       )}
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <WebcamCapture
-            onCapture={(file)=>setImageFile(file)}
-            onCancel={()=>setImageFile(null)}
-        />
+      {!captureFace ? (
         <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="username"
-            id="username"
-            name="username"
-            value={userData.username}
-            onChange={handleChange}
-            required
-          />
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="username">Username:</label>
+              <input
+                type="username"
+                id="username"
+                name="username"
+                value={userData.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={userData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <button disabled={loading || !formIsValid} onClick={()=>setCaptureFace(true)}>Login</button>
+            {loading && <p>Loading...</p>} {/* Display loading indicator if loading is true */}
+          </form>
+          <div>
+            Don't have an account? <a href="/register">Register</a> now !
+          </div>
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={userData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit" disabled={!imageFile || loading}>Login</button>
-        {loading && <p>Loading...</p>} {/* Display loading indicator if loading is true */}
-      </form>
-      <div>
-        Don't have an account? <a href="/register">Register</a> now !
-      </div>
+        ) : (
+          <div>
+            <button disabled={loading} onClick={()=>setCaptureFace(false)}>Back</button>
+            <WebcamCapture
+                key={reloadKey}
+                live={false}
+                onCapture={(file)=>setImageFile(file)}
+                onCancel={()=>setImageFile(null)}
+                onReload={()=>setReloadKey(reloadKey+1)}
+            />
+          </div>
+        )
+      }
     </div>
   );
 };
