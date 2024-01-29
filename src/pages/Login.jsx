@@ -12,10 +12,13 @@ const LoginPage = () => {
     username: "test",
     password: "test",
   });
+  const [otp, setOtp] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [captureFace, setCaptureFace] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
+  const [otpVerification, setOtpVerification] = useState(false);
+  const [cooldown, setCooldown] = useState(false);
 
 
   const checkToken = async () => {
@@ -78,6 +81,7 @@ const LoginPage = () => {
       formData.append("username", userData.username);
       formData.append("password", userData.password);
       formData.append("image", imageFile);
+      formData.append("otp", otp);
 
       // Make a POST request to login endpoint
       const response = await axios.post("login", formData, {timeout:30000});
@@ -94,9 +98,45 @@ const LoginPage = () => {
       if (error.response.data.message) {
         alert(error.response.data.message);
       }
-      setImageFile(null);
+      if (error.response.status === 406) {
+        //otp verification
+        setOtpVerification(true);
+      } else if (error.response.status === 401 || error.response.status === 500) {
+        setImageFile(null);
+        setOtpVerification(false);
+        setOtp("");
+        setCaptureFace(false);
+      } else {
+        setImageFile(null);
+        setOtpVerification(false);
+        setOtp("");
+      }
     } finally {
       setLoading(false); // Set loading to false after the request is complete
+    }
+  };
+
+  const resendOtp = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        username: userData.username,
+        password: userData.password,
+        action: "Login",
+      };
+      const response = await axios.post("resendOtp", qs.stringify(payload));
+      console.log(response.data.message);
+
+      // Enable cooldown after successful request
+      setCooldown(true);
+      setTimeout(() => {
+        setCooldown(false);
+      }, 30000);  // Set the cooldown duration in milliseconds (30 seconds)
+
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,23 +174,48 @@ const LoginPage = () => {
               />
             </div>
             <button disabled={loading || !formIsValid} onClick={()=>setCaptureFace(true)}>Login</button>
-            {loading && <p>Loading...</p>} {/* Display loading indicator if loading is true */}
           </form>
           <div>
             Don't have an account? <a href="/register">Register</a> now !
           </div>
         </div>
         ) : (
-          <div>
-            <button disabled={loading} onClick={()=>setCaptureFace(false)}>Back</button>
-            <WebcamCapture
-                key={reloadKey}
-                live={false}
-                onCapture={(file)=>setImageFile(file)}
-                onCancel={()=>setImageFile(null)}
-                onReload={()=>setReloadKey(reloadKey+1)}
-            />
+          !otpVerification ? (
+            <div>
+              <button disabled={loading} onClick={()=>{setCaptureFace(false); setImageFile(null)}}>Back</button>
+              <WebcamCapture
+                  key={reloadKey}
+                  live={false}
+                  onCapture={(file)=>setImageFile(file)}
+                  onCancel={()=>setImageFile(null)}
+                  onReload={()=>setReloadKey(reloadKey+1)}
+              />
+            </div>
+          )
+          : (
+            <div>
+              <button disabled={loading} onClick={()=>{setImageFile(null); setOtpVerification(false); setOtp("");}}>Back</button>
+              <div>
+                <label htmlFor="otp">Enter OTP:</label>
+                <input
+                  type="text"
+                  id="otp"
+                  name="otp"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                />
+                <button disabled={loading || cooldown} onClick={() => resendOtp()}>
+                  Resend
+                </button>
+              </div>
+              <div>
+                <button disabled={loading} onClick={() => handleSubmit()}>
+                  Verify OTP
+                </button>
+              </div>
           </div>
+          )
         )
       }
     </div>
