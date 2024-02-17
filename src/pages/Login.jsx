@@ -181,13 +181,13 @@ const LoginPage = () => {
         ) : (
           !otpVerification ? (
             <div>
-              <button disabled={loading} onClick={()=>{setCaptureFace(false); setImageFile(null)}}>Back</button>
               <WebcamCapture
                   key={reloadKey}
                   live={false}
                   onCapture={(file)=>setImageFile(file)}
                   onCancel={()=>setImageFile(null)}
                   onReload={()=>setReloadKey(reloadKey+1)}
+                  onBack={()=>{setCaptureFace(false); setImageFile(null)}}
               />
             </div>
           )
