@@ -20,21 +20,22 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, live=false, }) => {
 
     setIsCameraAvailable(false);
 
-    // Try to request permission again
-    if (webcamRef.current) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          webcamRef.current.video.srcObject = stream;
-          webcamRef.current.video.play();
-        })
-        .catch((err) => {
-          console.error("Failed to request webcam access:", err);
-        });
-    }
+    // // Try to request permission again
+    // if (webcamRef.current) {
+    //   navigator.mediaDevices
+    //     .getUserMedia({ video: true })
+    //     .then((stream) => {
+    //       webcamRef.current.video.srcObject = stream;
+    //       webcamRef.current.video.play();
+    //     })
+    //     .catch((err) => {
+    //       console.error("Failed to request webcam access:", err);
+    //     });
+    // }
   };
 
   const checkCameraAvailability = () => {
+    //request access to the webcam
     if (webcamRef.current) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
@@ -130,8 +131,8 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, live=false, }) => {
                 screenshotFormat="image/png"
                 audio={false}
                 mirrored={true}
-                onUserMediaError={onUserMediaError}
-                onUserMedia={onUserMedia}
+                onUserMediaError={()=>onUserMediaError}
+                onUserMedia={()=>onUserMedia}
               />
             </div>
           </div>
@@ -152,8 +153,8 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, live=false, }) => {
                     screenshotFormat="image/png"
                     audio={false}
                     mirrored={true}
-                    onUserMediaError={onUserMediaError}
-                    onUserMedia={onUserMedia}
+                    onUserMediaError={()=>onUserMediaError}
+                    onUserMedia={()=>onUserMedia}
                   />
                 </div>
                 <button type="button" onClick={handleCapture}>

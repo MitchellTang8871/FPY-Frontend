@@ -28,16 +28,14 @@ const LoginPage = () => {
         const response = await axios.post("checkToken", qs.stringify(payload));
         if (response.status === 200) {
           // Token is valid
+          axios.defaults.headers.common.Authorization = `Token ${reactLocalStorage.get("token")}`;
           navigate("/home");
-        } else {
-          // Token is invalid
-          alert("Invalid token. Please log in again.");
-          reactLocalStorage.clear();
         }
       } catch (error) {
-        console.log(error);
-        console.log(error.response.data.message);
-        reactLocalStorage.clear();
+        if (error.response.status === 460) {
+          // Token is invalid
+          reactLocalStorage.clear();
+        }
       }
     }
   };
@@ -125,6 +123,7 @@ const LoginPage = () => {
         action: "Login",
       };
       const response = await axios.post("resendOtp", qs.stringify(payload));
+      console.log("flag1")
       console.log(response.data.message);
 
       // Enable cooldown after successful request

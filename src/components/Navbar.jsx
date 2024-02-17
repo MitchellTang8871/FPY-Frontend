@@ -49,6 +49,11 @@ const Navbar = () => {
             </a>
           </li>
           <li className="navbar-menu-item">
+            <a href="/activitylogs" className="navbar-menu-link">
+              Activity Log
+            </a>
+          </li>
+          <li className="navbar-menu-item">
             <a href="#" className="navbar-menu-link" onClick={handleLogout}>
               Logout
             </a>

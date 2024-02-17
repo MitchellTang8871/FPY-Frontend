@@ -7,6 +7,7 @@ import {Routes, Route, BrowserRouter} from 'react-router-dom'
 import RegisterPage from './pages/Register';
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login'
+import ActivityLogsPage from './pages/ActivityLogs';
 
 function App() {
     useEffect(() => {
@@ -21,6 +22,7 @@ function App() {
                 <Route index path="/" element={<LoginPage/>}/>
                 <Route path="/register" element={<RegisterPage/>}/>
                 <Route path="/home" element={<HomePage/>}/>
+                <Route path="/activitylogs" element={<ActivityLogsPage/>}/>
             </Routes>
         </BrowserRouter>
     )
