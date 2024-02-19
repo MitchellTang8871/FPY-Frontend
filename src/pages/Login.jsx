@@ -123,7 +123,6 @@ const LoginPage = () => {
         action: "Login",
       };
       const response = await axios.post("resendOtp", qs.stringify(payload));
-      console.log("flag1")
       console.log(response.data.message);
 
       // Enable cooldown after successful request
@@ -184,9 +183,11 @@ const LoginPage = () => {
               <WebcamCapture
                   key={reloadKey}
                   live={false}
+                  dev={true} //development purpose
                   onCapture={(file)=>setImageFile(file)}
                   onCancel={()=>setImageFile(null)}
                   onReload={()=>setReloadKey(reloadKey+1)}
+                  back={true}
                   onBack={()=>{setCaptureFace(false); setImageFile(null)}}
               />
             </div>

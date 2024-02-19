@@ -14,6 +14,7 @@ const RegisterPage = () => {
     password: "",
   });
   const [imageFile, setImageFile] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +42,7 @@ const RegisterPage = () => {
       const response = await axios.post("register", formData);
       console.log(response.data.message);
 
-      alert("Registration successful");
+      alert(response.data.message);
 
       // Redirect to /
       navigate("/");
@@ -67,8 +68,12 @@ const RegisterPage = () => {
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <WebcamCapture
+            key={reloadKey}
+            live={false}
+            dev={true} //development purpose
             onCapture={(file)=>setImageFile(file)}
             onCancel={()=>setImageFile(null)}
+            onReload={()=>setReloadKey(reloadKey+1)}
         />
         <div>
           <label htmlFor="username">Username:</label>

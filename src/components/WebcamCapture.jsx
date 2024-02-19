@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 
-const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, live=false, }) => {
+const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live=false, dev=false }) => {
   const webcamRef = useRef(null);
   const [isCameraAvailable, setIsCameraAvailable] = useState(true);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -148,7 +148,10 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, live=false, }) =
           ) : (
             <div>
               <div>
-                <button onClick={()=>onBack()}>Back</button>
+                {
+                  back&&
+                    <button onClick={()=>onBack()}>Back</button>
+                }
                 <div>
                   <Webcam
                     ref={webcamRef}
@@ -162,7 +165,10 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, live=false, }) =
                 <button type="button" onClick={handleCapture}>
                   Capture Face
                 </button>
-                <input type="file" accept="image/*" onChange={handleUpload} />
+                {
+                  dev&&
+                    <input type="file" accept="image/*" onChange={handleUpload} />
+                }
               </div>
             </div>
           )
