@@ -18,6 +18,10 @@ const Navbar = () => {
     navigate("/");
   };
 
+  const notAvailable = () => {
+    alert("Not Available at the moment");
+  }
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -29,22 +33,22 @@ const Navbar = () => {
         </div>
         <div className="navbar-right">
           <li className="navbar-menu-item">
-            <a href="#" className="navbar-menu-link">
+            <a href="#" className="navbar-menu-link" onClick={()=>notAvailable()}>
               Timetable
             </a>
           </li>
           <li className="navbar-menu-item">
-            <a href="#" className="navbar-menu-link">
+            <a href="#" className="navbar-menu-link" onClick={()=>notAvailable()}>
               Attendance
             </a>
           </li>
           <li className="navbar-menu-item">
-            <a href="#" className="navbar-menu-link">
+            <a href="#" className="navbar-menu-link" onClick={()=>notAvailable()}>
               Exam Results
             </a>
           </li>
           <li className="navbar-menu-item">
-            <a href="#" className="navbar-menu-link">
+            <a href="#" className="navbar-menu-link" onClick={()=>notAvailable()}>
               EMSCard
             </a>
           </li>
@@ -54,7 +58,7 @@ const Navbar = () => {
             </a>
           </li>
           <li className="navbar-menu-item">
-            <a href="#" className="navbar-menu-link" onClick={handleLogout}>
+            <a href="#" className="navbar-menu-link" onClick={()=>handleLogout()}>
               Logout
             </a>
           </li>
