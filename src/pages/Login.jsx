@@ -19,6 +19,7 @@ const LoginPage = () => {
   const [reloadKey, setReloadKey] = useState(0);
   const [otpVerification, setOtpVerification] = useState(false);
   const [cooldown, setCooldown] = useState(false);
+  const [message, setMessage] = useState("");
 
 
   const checkToken = async () => {
@@ -94,7 +95,8 @@ const LoginPage = () => {
       console.log(error);
       console.log(error.response.data.message);
       if (error.response.data.message) {
-        alert(error.response.data.message);
+        // alert(error.response.data.message);
+        setMessage(error.response.data.message);
       }
       if (error.response.status === 406) {
         //otp verification
@@ -146,6 +148,7 @@ const LoginPage = () => {
         </div>
       )}
       <h2>Login</h2>
+      {message && <p style={{ color: "red" }}>{message}</p>}
       {!captureFace ? (
         <div>
           <form onSubmit={handleSubmit}>
@@ -182,7 +185,7 @@ const LoginPage = () => {
             <div>
               <WebcamCapture
                   key={reloadKey}
-                  live={false}
+                  live={true}
                   dev={true} //development purpose
                   onCapture={(file)=>setImageFile(file)}
                   onCancel={()=>setImageFile(null)}

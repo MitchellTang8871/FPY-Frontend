@@ -15,6 +15,7 @@ const RegisterPage = () => {
   });
   const [imageFile, setImageFile] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [image, setImage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,6 +52,9 @@ const RegisterPage = () => {
       console.log(error);
       console.log(error.response.data.message);
       if (error.response.data.message) {
+        if (error.response.data.encodedImage) {
+          setImage(error.response.data.encodedImage);
+        }
         alert(error.response.data.message);
       }
     } finally {
@@ -72,8 +76,9 @@ const RegisterPage = () => {
             live={false}
             dev={true} //development purpose
             onCapture={(file)=>setImageFile(file)}
-            onCancel={()=>setImageFile(null)}
+            onCancel={()=>{setImageFile(null);setImage(null)}}
             onReload={()=>setReloadKey(reloadKey+1)}
+            image={image}
         />
         <div>
           <label htmlFor="username">Username:</label>
