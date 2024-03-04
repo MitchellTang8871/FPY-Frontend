@@ -33,7 +33,8 @@ const Navbar = () => {
   const getResults = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("getresults", otp);
+      const payload = { otp: otp };
+      const response = await axios.post("getresults", qs.stringify(payload));
 
       // Create a Blob from the response data
       const blob = new Blob([response.data], { type: "application/pdf" });
@@ -44,8 +45,15 @@ const Navbar = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      alert("Error occurred while generate results.");
-      console.error(error);
+      if (error.response.status === 406) {
+        alert(error.response.data.message);
+      } else if (error.response.status === 460) {
+        // Token is invalid
+        reactLocalStorage.clear();
+      } else {
+        alert("Error occurred while generate results.");
+        console.error(error);
+      }
     }
 }
 
@@ -76,16 +84,12 @@ const resendOtp = async () => {
   return (
     <>
       <Modal isOpen={otpModal} toggle={()=>setOtpModal(false)} style={{display:"flex", justifyContent:"center", alignItems:"center", height:"100vh", color:"black"}}>
-        <div style={{display:"flex", flexDirection:"column", margin:"10px", gap:"10px"  }}>
-          <div style={{display:"flex", justifyContent:"space-between",gap:"10px"}}>
+        <div style={{display:"flex", flexDirection:"column", margin:10, gap:10  }}>
+          <div style={{display:"flex", justifyContent:"space-between", gap:10}}>
             <label htmlFor="otp">Enter OTP:</label>
             <Input
-              type="text"
-              id="otp"
-              name="otp"
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
+              onChange={(e) => {setOtp(e.target.value)}}
             />
             <Button disabled={loading || cooldown} onClick={() => resendOtp()}>
               {otpSent ? 'Resend' : 'Send'}
@@ -123,7 +127,7 @@ const resendOtp = async () => {
               </a>
             </li>
             <li className="navbar-menu-item">
-              <a href="#" className="navbar-menu-link" onClick={()=>notAvailable()}>
+              <a href="/emscard" className="navbar-menu-link">
                 EMSCard
               </a>
             </li>

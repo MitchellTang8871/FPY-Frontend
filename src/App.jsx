@@ -8,6 +8,7 @@ import RegisterPage from './pages/Register';
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login'
 import ActivityLogsPage from './pages/ActivityLogs';
+import EMSCardPage from './pages/EMSCard';
 
 function App() {
     useEffect(() => {
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/register" element={<RegisterPage/>}/>
                 <Route path="/home" element={<HomePage/>}/>
                 <Route path="/activitylogs" element={<ActivityLogsPage/>}/>
+                <Route path="/emscard" element={<EMSCardPage/>}/>
             </Routes>
         </BrowserRouter>
     )

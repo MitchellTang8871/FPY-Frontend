@@ -6,11 +6,10 @@ import qs from 'qs';
 
 const ActivityLogsPage = () => {
     const [logData, setLogData] = useState([]);
-    const [imageFile, setImageFile] = useState(null);
 
     const getActivityLogs = async () => {
         try{
-            const response = await axios.post("getactivitylogs", imageFile);
+            const response = await axios.post("getactivitylogs");
             setLogData(response.data);
         } catch (error) {
             console.log(error);

@@ -74,7 +74,7 @@ const RegisterPage = () => {
         <WebcamCapture
             key={reloadKey}
             live={false}
-            dev={true} //development purpose
+            dev={false} //development purpose
             onCapture={(file)=>setImageFile(file)}
             onCancel={()=>{setImageFile(null);setImage(null)}}
             onReload={()=>setReloadKey(reloadKey+1)}
