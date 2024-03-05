@@ -165,8 +165,14 @@
   z-index: 1000; /* Ensure the modal is on top of the backdrop */
 }
 
+
+.modal {
+  --bs-modal-width: 700px
+}
+
 .modal-content {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 20px;
 }

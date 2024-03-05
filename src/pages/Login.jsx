@@ -9,8 +9,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({
-    username: "test",
-    password: "test",
+    username: "",
+    password: "",
   });
   const [otp, setOtp] = useState("");
   const [imageFile, setImageFile] = useState(null);
@@ -106,6 +106,10 @@ const LoginPage = () => {
         setOtpVerification(false);
         setOtp("");
         setCaptureFace(false);
+      } else if (error.response.status === 409) {
+        //face does not match
+        setImageFile(null);
+        setCaptureFace(false);
       } else {
         setImageFile(null);
         setOtpVerification(false);
@@ -186,9 +190,9 @@ const LoginPage = () => {
             <div>
               <WebcamCapture
                   key={reloadKey}
-                  live={true}
+                  live={false}
                   dev={true} //development purpose
-                  onCapture={(file)=>setImageFile(file)}
+                  onCapture={(file)=>{setImageFile(file);}}
                   onCancel={()=>setImageFile(null)}
                   onReload={()=>setReloadKey(reloadKey+1)}
                   back={true}

@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
+import { Button, Modal, Input } from 'reactstrap';
 
-const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live=false, dev=false, image }) => {
+const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live=false, dev=false, image, width, height }) => {
   const webcamRef = useRef(null);
   const [isCameraAvailable, setIsCameraAvailable] = useState(true);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -123,16 +124,21 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live
           <div>
             <p>Camera is not available. Please check your camera settings and try again.</p>
           </div>
-          <button type="button" onClick={onReload}>
+          <Button type="button" onClick={onReload}>
             Reload
-          </button>
+          </Button>
         </>
       ) : (
         live ? (
           <div>
-            <button onClick={()=>onBack()}>Back</button>
+            {
+              back&&
+                <Button onClick={()=>onBack()}>Back</Button>
+            }
             <div>
               <Webcam
+                height={height}
+                width={width}
                 ref={webcamRef}
                 screenshotFormat="image/png"
                 audio={false}
@@ -151,19 +157,21 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live
                   :
                   <div><img src={capturedImage}/></div>
               }
-              <button type="button" onClick={handleCancelCapture}>
+              <Button type="button" onClick={handleCancelCapture}>
                 Cancel
-              </button>
+              </Button>
             </div>
           ) : (
             <div>
               <div>
                 {
                   back&&
-                    <button onClick={()=>onBack()}>Back</button>
+                    <Button onClick={()=>onBack()}>Back</Button>
                 }
                 <div>
                   <Webcam
+                    height={height}
+                    width={width}
                     ref={webcamRef}
                     screenshotFormat="image/png"
                     audio={false}
@@ -172,12 +180,12 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live
                     onUserMedia={()=>onUserMedia}
                   />
                 </div>
-                <button type="button" onClick={handleCapture}>
+                <Button type="button" onClick={handleCapture}>
                   Capture Face
-                </button>
+                </Button>
                 {
                   dev&&
-                    <input type="file" accept="image/*" onChange={handleUpload} />
+                    <Input type="file" accept="image/*" onChange={handleUpload} />
                 }
               </div>
             </div>

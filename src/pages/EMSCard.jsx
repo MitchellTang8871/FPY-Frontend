@@ -6,6 +6,7 @@ import qs from 'qs';
 import { Button, Modal, Input } from 'reactstrap';
 import { IoIosSearch } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
+import WebcamCapture from "../components/WebcamCapture";
 
 const EMSCardPage = () => {
     const [loading, setLoading] = useState(false);
@@ -19,6 +20,10 @@ const EMSCardPage = () => {
     const [usersList, setUsersList] = useState([]);
     const [amountError, setAmountError] = useState('');
     const [descriptionError, setDescriptionError] = useState('');
+    const [webcamCaptureModal, setWebcamCaptureModal] = useState(false);
+    const [imageFile, setImageFile] = useState(null);
+    const [reloadKey, setReloadKey] = useState(0);
+    const [message, setMessage] = useState("");
 
     const getUserCredit = async () => {
         try{
@@ -37,7 +42,6 @@ const EMSCardPage = () => {
         try{
             const response = await axios.get("gettransactions");
             setTransactions(response.data);
-            console.log(response.data);
         } catch (error) {
             console.log(error);
             console.log(error.response.data.message);
@@ -56,6 +60,13 @@ const EMSCardPage = () => {
         getUserCredit();
         getTransactions();
     }, []);
+
+    useEffect(() => {
+        // Check if imageFile is not null and call handleSubmit
+        if (imageFile) {
+          handlePayment();
+        }
+      }, [imageFile]);
 
     const formatDateTime = (timestamp) => {
         const date = new Date(timestamp);
@@ -124,27 +135,43 @@ const EMSCardPage = () => {
                 alert("Please enter valid amount and description");
                 return;
             }
+            if (imageFile === null) {
+                alert("Please scan your face");
+                return;
+            }
 
             setLoading(true);
-            const payload = {
-                receiver: receiver,
-                amount: amount,
-                description: description
-            }
-            const response = await axios.post("pay", qs.stringify(payload));
+            const formData = new FormData();
+            formData.append("receiver", receiver);
+            formData.append("amount", amount);
+            formData.append("description", description);
+            formData.append("image", imageFile);
+
+            const response = await axios.post("pay", formData);
             alert(response.data.message);
             setPayModal(false);
             setAmount(null);
             setReceiver(null);
             setDescription("");
             setSearchTerm("");
+            setWebcamCaptureModal(false);
+            setImageFile(null);
             getUserCredit();
             getTransactions();
             setLoading(false);
         } catch (error) {
             console.log(error);
             if (error.response.data.message) {
-                alert(error.response.data.message);
+                setMessage(error.response.data.message);
+            } else {
+                alert("Something went wrong, please try again");
+            }
+            if (error.response.status === 409) {
+                //face does not match
+                setWebcamCaptureModal(false);
+                setImageFile(null);
+            } else {
+                setImageFile(null);
             }
             setLoading(false);
         }
@@ -164,6 +191,7 @@ const EMSCardPage = () => {
                     setReceiver(null);
                     setDescription("");
                     setSearchTerm("");
+                    setImageFile(null);
                 }}
                 style={{display:"flex",  alignItems:"center", color:"black"}}>
                 {
@@ -219,13 +247,40 @@ const EMSCardPage = () => {
                             {descriptionError && <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', color: 'red' }}>{descriptionError}</div>}
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <Button style={{backgroundColor:'#3b8dff', color:"white", fontWeight:'bold', height:'100%', width:'100px' }}
-                                    onClick={() => {handlePayment()}}>
+                                    onClick={() => {
+                                        if (!amount || !description) {
+                                            alert("Please fill in all fields");
+                                            return;
+                                        }
+                                        if (amountError || descriptionError) {
+                                            alert("Please enter valid amount and description");
+                                            return;
+                                        }
+                                        setWebcamCaptureModal(true)
+                                    }}>
                                     Confirm
                                 </Button>
                             </div>
                         </div>
                     )
                 }
+            </Modal>
+            <Modal isOpen={webcamCaptureModal}
+                toggle={()=>{
+                    setWebcamCaptureModal(false);
+                    setImageFile(null);
+                }}
+                style={{display:"flex",  alignItems:"center", color:"black"}}>
+                    {message && <p style={{ color: "red" }}>{message}</p>}
+                    <WebcamCapture
+                        width={600}
+                        key={reloadKey}
+                        live={true}
+                        dev={false} //development purpose
+                        onCapture={(file)=>{setImageFile(file)}}
+                        onCancel={()=>setImageFile(null)}
+                        onReload={()=>setReloadKey(reloadKey+1)}
+                    />
             </Modal>
 
             <Navbar />
