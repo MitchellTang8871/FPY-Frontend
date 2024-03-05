@@ -190,8 +190,8 @@ const LoginPage = () => {
             <div>
               <WebcamCapture
                   key={reloadKey}
-                  live={false}
-                  dev={true} //development purpose
+                  live={true}
+                  dev={false} //development purpose
                   onCapture={(file)=>{setImageFile(file);}}
                   onCancel={()=>setImageFile(null)}
                   onReload={()=>setReloadKey(reloadKey+1)}
