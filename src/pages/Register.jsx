@@ -40,7 +40,7 @@ const RegisterPage = () => {
 
       // Make a POST request to your registration endpoint
 
-      const response = await axios.post("register", formData);
+      const response = await axios.post("register", formData, {timeout:30000});
       console.log(response.data.message);
 
       alert(response.data.message);

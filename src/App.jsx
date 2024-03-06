@@ -12,8 +12,7 @@ import EMSCardPage from './pages/EMSCard';
 
 function App() {
     useEffect(() => {
-        // axios.defaults.baseURL = `https://dfb0-2001-e68-7dbc-a001-4114-a272-b01b-204c.ngrok-free.app`
-        // axios.defaults.baseURL = `xlctan7uc3.loclx.io`
+        // axios.defaults.baseURL = `https://9d2l4wyfae.ap.loclx.io`
         axios.defaults.baseURL = `http://localhost:8000`
         axios.defaults.timeout = 15000
     }, []);

@@ -27,27 +27,34 @@ const EMSCardPage = () => {
 
     const getUserCredit = async () => {
         try{
-            const response = await axios.get("getusercredit");
+            setLoading(true);
+            const response = await axios.get("getusercredit", {timeout:30000});
             setUserCredit(response.data.credit);
+            setLoading(false);
         } catch (error) {
             console.log(error);
             console.log(error.response.data.message);
             if (error.response.data.message) {
                 alert(error.response.data.message);
             }
+            setLoading(false);
         }
     }
 
     const getTransactions = async () => {
         try{
-            const response = await axios.get("gettransactions");
+            setLoading(true);
+            const response = await axios.get("gettransactions", {timeout:30000});
             setTransactions(response.data);
+            console.log(response.data);
+            setLoading(false);
         } catch (error) {
             console.log(error);
             console.log(error.response.data.message);
             if (error.response.data.message) {
                 alert(error.response.data.message);
             }
+            setLoading(false);
         }
     }
 
@@ -63,7 +70,7 @@ const EMSCardPage = () => {
 
     useEffect(() => {
         // Check if imageFile is not null and call handleSubmit
-        if (imageFile) {
+        if (imageFile && !loading) {
           handlePayment();
         }
       }, [imageFile]);
@@ -85,9 +92,8 @@ const EMSCardPage = () => {
     const searchUsers = async () => {
         try{
             setLoading(true);
-            console.log(searchTerm)
             const payload = {searchTerm: searchTerm};
-            const response = await axios.post("searchusers", qs.stringify(payload));
+            const response = await axios.post("searchusers", qs.stringify(payload), {timeout:30000});
             setUsersList(response.data);
             setLoading(false);
         } catch (error) {
@@ -147,7 +153,7 @@ const EMSCardPage = () => {
             formData.append("description", description);
             formData.append("image", imageFile);
 
-            const response = await axios.post("pay", formData);
+            const response = await axios.post("pay", formData, {timeout:30000});
             alert(response.data.message);
             setPayModal(false);
             setAmount(null);
@@ -167,7 +173,8 @@ const EMSCardPage = () => {
                 alert("Something went wrong, please try again");
             }
             if (error.response.status === 409) {
-                //face does not match
+                //face does not match //connection not allowed for transaction
+                alert(error.response.data.message);
                 setWebcamCaptureModal(false);
                 setImageFile(null);
             } else {
@@ -276,6 +283,7 @@ const EMSCardPage = () => {
                         width={600}
                         key={reloadKey}
                         live={true}
+                        loading={loading}
                         dev={false} //development purpose
                         onCapture={(file)=>{setImageFile(file)}}
                         onCancel={()=>setImageFile(null)}
@@ -293,7 +301,7 @@ const EMSCardPage = () => {
                     <Button style={{backgroundColor:'#3b8dff', color:"white", fontWeight:'bold', height:'100%', width:'100px'}} onClick={() => setPayModal(true)}>Pay</Button>
                 </div>
                 <div style={{height:"5%"}}></div>
-                <div style={{display:'flex', flexDirection:"column", height:"10%", paddingTop:10, width:"70vw"}}>
+                <div style={{display:'flex', flexDirection:"column", height:"15%", paddingTop:10, width:"70vw"}}>
                     <div style={{textAlign:"left", fontWeight:"bold", borderBottom:"2px solid white", paddingBottom:10}}>Transaction History</div>
                     <div style={{display:"flex", flexDirection:"row"}}>
                         <div style={{width:"35%", textDecoration:"underline"}}>Transaction</div>
@@ -301,14 +309,15 @@ const EMSCardPage = () => {
                         <div style={{width:"30%", textDecoration:"underline"}}>Amount</div>
                     </div>
                 </div>
-                <div style={{overflowY:'auto', height:'75%'}}>
+                <div style={{overflowY:'auto', height:'70%'}}>
                     {transactions.map((transaction, index) => (
                         <div key={index} style={{ display: 'flex', flexDirection: 'row', paddingTop:20, alignItems:'center', gap:20, whiteSpace:"nowrap" }}>
                             <div style={{ width: '35%', textAlign: 'left' }}>
-                                <div style={{display:'flex', flexDirection:'row', gap:20}}>
+                                <div style={{display:'flex', flexDirection:'row', gap:10}}>
+                                    <div>{transaction.amount >= 0 ? "From:" : "To:"}</div>
                                     <div style={{display:'flex', flexDirection:'column', gap:5}}>
-                                        <div>{transaction.receiver.name}</div>
-                                        <div style={{fontSize:'60%'}}>{transaction.receiver.username}</div>
+                                        <div>{transaction.amount >= 0 ? transaction.user.name : transaction.receiver.name}</div>
+                                        <div style={{fontSize:'60%'}}>{transaction.amount >= 0 ? transaction.user.username : transaction.receiver.username}</div>
                                         <div style={{fontSize:'80%'}}>{formatDateTime(transaction.timestamp)}</div>
                                     </div>
                                 </div>

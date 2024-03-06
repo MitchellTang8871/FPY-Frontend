@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Button, Modal, Input } from 'reactstrap';
 
-const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live=false, dev=false, image, width, height }) => {
+const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live=false, dev=false, image, width, height, loading }) => {
   const webcamRef = useRef(null);
   const [isCameraAvailable, setIsCameraAvailable] = useState(true);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -20,19 +20,6 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live
     alert("Webcam error: " + error.message + "\nPlease allow access to the webcam and try again.");
 
     setIsCameraAvailable(false);
-
-    // // Try to request permission again
-    // if (webcamRef.current) {
-    //   navigator.mediaDevices
-    //     .getUserMedia({ video: true })
-    //     .then((stream) => {
-    //       webcamRef.current.video.srcObject = stream;
-    //       webcamRef.current.video.play();
-    //     })
-    //     .catch((err) => {
-    //       console.error("Failed to request webcam access:", err);
-    //     });
-    // }
   };
 
   const checkCameraAvailability = () => {
@@ -59,7 +46,7 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live
   useEffect(() => {
     let captureInterval;
 
-    if (isCameraAvailable && live) {
+    if (isCameraAvailable && live && !loading) {
       // Start capturing every 3 seconds
       captureInterval = setInterval(()=>handleCapture(), 3000);
     }
@@ -68,7 +55,7 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live
       // Clear the interval when the component unmounts or isCameraAvailable becomes false
       clearInterval(captureInterval);
     };
-  }, [isCameraAvailable, live]);
+  }, [isCameraAvailable, live, loading]);
 
   const handleCapture = () => {
     if (isCameraAvailable && webcamRef.current) {

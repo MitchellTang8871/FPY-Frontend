@@ -6,17 +6,21 @@ import qs from 'qs';
 
 const ActivityLogsPage = () => {
     const [logData, setLogData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const getActivityLogs = async () => {
         try{
-            const response = await axios.post("getactivitylogs");
+            setLoading(true);
+            const response = await axios.get("getactivitylogs", {timeout:30000});
             setLogData(response.data);
+            setLoading(false);
         } catch (error) {
             console.log(error);
             console.log(error.response.data.message);
             if (error.response.data.message) {
                 alert(error.response.data.message);
             }
+            setLoading(false);
         }
 
     }
@@ -49,6 +53,11 @@ const ActivityLogsPage = () => {
 
     return (
         <div className="ActivityLogs">
+            {loading && (
+                <div className="overlay">
+                <div className="spinner"></div>
+                </div>
+            )}
             <Navbar />
             <div className='content-container'>
                 <div style={{ display: 'flex', flexDirection: 'row', height:'5%', alignItems:'center', gap:20 }}>

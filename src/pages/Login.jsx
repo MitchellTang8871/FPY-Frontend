@@ -26,7 +26,7 @@ const LoginPage = () => {
     if (reactLocalStorage.get("token")) {
       try {
         const payload = { token: reactLocalStorage.get("token") };
-        const response = await axios.post("checkToken", qs.stringify(payload));
+        const response = await axios.post("checkToken", qs.stringify(payload), {timeout:30000});
         if (response.status === 200) {
           // Token is valid
           axios.defaults.headers.common.Authorization = `Token ${reactLocalStorage.get("token")}`;
@@ -35,6 +35,7 @@ const LoginPage = () => {
       } catch (error) {
         if (error.response.status === 460) {
           // Token is invalid
+          console.log("wtf")
           reactLocalStorage.clear();
         }
       }
@@ -54,7 +55,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     // Check if imageFile is not null and call handleSubmit
-    if (imageFile) {
+    if (imageFile && !loading) {
       handleSubmit();
     }
   }, [imageFile]);
@@ -83,7 +84,7 @@ const LoginPage = () => {
       formData.append("otp", otp);
 
       // Make a POST request to login endpoint
-      const response = await axios.post("login", formData, {timeout:30000});
+      const response = await axios.post("login", formData, {timeout:300000});
       console.log(response.data.message);
 
       reactLocalStorage.set("token", response.data.token);
@@ -128,7 +129,7 @@ const LoginPage = () => {
         password: userData.password,
         action: "Login",
       };
-      const response = await axios.post("resendOtp", qs.stringify(payload));
+      const response = await axios.post("resendOtp", qs.stringify(payload), {timeout:30000});
       console.log(response.data.message);
 
       // Enable cooldown after successful request
@@ -191,6 +192,7 @@ const LoginPage = () => {
               <WebcamCapture
                   key={reloadKey}
                   live={true}
+                  loading={loading}
                   dev={false} //development purpose
                   onCapture={(file)=>{setImageFile(file);}}
                   onCancel={()=>setImageFile(null)}

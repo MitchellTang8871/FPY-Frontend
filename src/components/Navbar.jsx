@@ -15,7 +15,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post("logout");
+      const response = await axios.post("logout", {timeout:30000});
     } catch (error) {
       console.log(error);
       console.log(error.response.data.message);
@@ -34,7 +34,7 @@ const Navbar = () => {
     try {
       setLoading(true);
       const payload = { otp: otp };
-      const response = await axios.post("getresults", qs.stringify(payload));
+      const response = await axios.post("getresults", qs.stringify(payload), {timeout:30000});
 
       // Create a Blob from the response data
       const blob = new Blob([response.data], { type: "application/pdf" });
@@ -64,7 +64,7 @@ const resendOtp = async () => {
     const payload = {
       action: "Check Exam Result",
     };
-    const response = await axios.post("resendOtp", qs.stringify(payload));
+    const response = await axios.post("resendOtp", qs.stringify(payload), {timeout:30000});
     console.log(response.data.message);
 
     // Enable cooldown after successful request
