@@ -46,7 +46,6 @@ const EMSCardPage = () => {
             setLoading(true);
             const response = await axios.get("gettransactions", {timeout:30000});
             setTransactions(response.data);
-            console.log(response.data);
             setLoading(false);
         } catch (error) {
             console.log(error);
