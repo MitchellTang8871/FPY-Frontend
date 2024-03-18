@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import WebcamCapture from "../components/WebcamCapture";
+import { Button, Input } from 'reactstrap';
 
 
 const RegisterPage = () => {
@@ -70,7 +71,7 @@ const RegisterPage = () => {
         </div>
       )}
       <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10}}>
         <WebcamCapture
             key={reloadKey}
             live={false}
@@ -80,9 +81,9 @@ const RegisterPage = () => {
             onReload={()=>setReloadKey(reloadKey+1)}
             image={image}
         />
-        <div>
+        <div style={{ display: "flex", flexDirection: "row",  gap: 10 }}>
           <label htmlFor="username">Username:</label>
-          <input
+          <Input
             type="text"
             id="username"
             name="username"
@@ -91,9 +92,9 @@ const RegisterPage = () => {
             required
           />
         </div>
-        <div>
+        <div style={{ display: "flex", flexDirection: "row",  gap: 10 }}>
           <label htmlFor="name">Name:</label>
-          <input
+          <Input
             type="text"
             id="name"
             name="name"
@@ -102,9 +103,9 @@ const RegisterPage = () => {
             required
           />
         </div>
-        <div>
+        <div style={{ display: "flex", flexDirection: "row",  gap: 10 }}>
           <label htmlFor="email">Email:</label>
-          <input
+          <Input
             type="email"
             id="email"
             name="email"
@@ -113,9 +114,9 @@ const RegisterPage = () => {
             required
           />
         </div>
-        <div>
+        <div style={{ display: "flex", flexDirection: "row",  gap: 10 }}>
           <label htmlFor="password">Password:</label>
-          <input
+          <Input
             type="password"
             id="password"
             name="password"
@@ -124,7 +125,7 @@ const RegisterPage = () => {
             required
           />
         </div>
-        <button type="submit" disabled={!imageFile}>Register</button>
+        <Button type="submit" disabled={!imageFile}>Register</Button>
       </form>
       <div>Already have an account? <a href="/">Login</a> now !</div>
     </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { reactLocalStorage } from "reactjs-localstorage";
+import { Button, Input } from 'reactstrap';
 import WebcamCapture from "../components/WebcamCapture";
 import qs from 'qs';
 
@@ -157,10 +158,10 @@ const LoginPage = () => {
       {message && <p style={{ color: "red" }}>{message}</p>}
       {!captureFace ? (
         <div>
-          <form onSubmit={handleSubmit}>
-            <div>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10}}>
+            <div style={{ display: "flex", flexDirection: "row",  gap: 10 }}>
               <label htmlFor="username">Username:</label>
-              <input
+              <Input
                 type="username"
                 id="username"
                 name="username"
@@ -169,9 +170,9 @@ const LoginPage = () => {
                 required
               />
             </div>
-            <div>
+            <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
               <label htmlFor="password">Password:</label>
-              <input
+              <Input
                 type="password"
                 id="password"
                 name="password"
@@ -180,7 +181,7 @@ const LoginPage = () => {
                 required
               />
             </div>
-            <button disabled={loading || !formIsValid} onClick={()=>setCaptureFace(true)}>Login</button>
+            <Button disabled={loading || !formIsValid} onClick={()=>setCaptureFace(true)}>Login</Button>
           </form>
           <div>
             Don't have an account? <a href="/register">Register</a> now !
