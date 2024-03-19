@@ -158,7 +158,8 @@ const LoginPage = () => {
       {message && <p style={{ color: "red" }}>{message}</p>}
       {!captureFace ? (
         <div>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10}}>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10}}
+          onKeyDown={(e) => e.key === "Enter" && setCaptureFace(true)}>
             <div style={{ display: "flex", flexDirection: "row",  gap: 10 }}>
               <label htmlFor="username">Username:</label>
               <Input
@@ -204,26 +205,27 @@ const LoginPage = () => {
             </div>
           )
           : (
-            <div>
-              <button disabled={loading} onClick={()=>{setImageFile(null); setOtpVerification(false); setOtp("");}}>Back</button>
-              <div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10}}>
+              <Button disabled={loading} onClick={()=>{setImageFile(null); setOtpVerification(false); setOtp("");}}>Back</Button>
+              <div style={{ display: "flex", flexDirection: "row",  gap: 10 }}>
                 <label htmlFor="otp">Enter OTP:</label>
-                <input
+                <Input
                   type="text"
                   id="otp"
                   name="otp"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   required
                 />
-                <button disabled={loading || cooldown} onClick={() => resendOtp()}>
+                <Button disabled={loading || cooldown} onClick={() => resendOtp()}>
                   Resend
-                </button>
+                </Button>
               </div>
               <div>
-                <button disabled={loading} onClick={() => handleSubmit()}>
+                <Button disabled={loading} onClick={() => handleSubmit()}>
                   Verify OTP
-                </button>
+                </Button>
               </div>
           </div>
           )

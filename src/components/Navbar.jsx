@@ -90,6 +90,7 @@ const resendOtp = async () => {
             <Input
               value={otp}
               onChange={(e) => {setOtp(e.target.value)}}
+              onKeyDown={(e) => e.key === "Enter" && getResults()}
             />
             <Button disabled={loading || cooldown} onClick={() => resendOtp()}>
               {otpSent ? 'Resend' : 'Send'}
