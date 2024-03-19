@@ -9,6 +9,7 @@ import HomePage from './pages/Home';
 import LoginPage from './pages/Login'
 import ActivityLogsPage from './pages/ActivityLogs';
 import EMSCardPage from './pages/EMSCard';
+import AdminPage from './pages/Admin';
 
 function App() {
     useEffect(() => {
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/home" element={<HomePage/>}/>
                 <Route path="/activitylogs" element={<ActivityLogsPage/>}/>
                 <Route path="/emscard" element={<EMSCardPage/>}/>
+                <Route path="/admin" element={<AdminPage/>}/>
             </Routes>
         </BrowserRouter>
     )
