@@ -8,14 +8,9 @@ const AdminPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const checkAdminStatus = async () => {
+    const checkAdminStatus = async () => {
+        try {
             setLoading(true);
-            if (!reactLocalStorage.get("token")) {
-                throw new Error("Authentication failed. Redirecting to login page...");
-            }
-
-            axios.defaults.headers.common.Authorization = `Token ${reactLocalStorage.get("token")}`;
 
             const payload = { token: reactLocalStorage.get("token") };
             const response = await axios.post("isadmin", qs.stringify(payload), { timeout: 30000 });
@@ -25,9 +20,23 @@ const AdminPage = () => {
                 setLoading(false);
                 return
             }
+        } catch (error) {
+            setError(error.response.data.message);
+            if (error.response.status === 460) {
+                // Token is invalid
+                reactLocalStorage.clear();
+            }
             setLoading(false);
             window.location.href = "/";
-        };
+        }
+    };
+
+    useEffect(() => {
+        if (!reactLocalStorage.get("token")) {
+            window.location.href = "/";
+        }
+
+        axios.defaults.headers.common.Authorization = `Token ${reactLocalStorage.get("token")}`;
 
         checkAdminStatus();
     }, []);

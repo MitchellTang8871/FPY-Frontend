@@ -37,6 +37,11 @@ const EMSCardPage = () => {
             if (error.response.data.message) {
                 alert(error.response.data.message);
             }
+            if (error.response.status === 460) {
+                // Token is invalid
+                reactLocalStorage.clear();
+                window.location.href = "/";
+            }
             setLoading(false);
         }
     }
@@ -52,6 +57,11 @@ const EMSCardPage = () => {
             console.log(error.response.data.message);
             if (error.response.data.message) {
                 alert(error.response.data.message);
+            }
+            if (error.response.status === 460) {
+                // Token is invalid
+                reactLocalStorage.clear();
+                window.location.href = "/";
             }
             setLoading(false);
         }
@@ -99,6 +109,11 @@ const EMSCardPage = () => {
             console.log(error);
             if (error.response.data.message) {
                 alert(error.response.data.message);
+            }
+            if (error.response.status === 460) {
+                // Token is invalid
+                reactLocalStorage.clear();
+                window.location.href = "/";
             }
             setLoading(false);
         }

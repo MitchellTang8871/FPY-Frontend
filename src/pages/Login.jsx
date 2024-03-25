@@ -36,7 +36,6 @@ const LoginPage = () => {
       } catch (error) {
         if (error.response.status === 460) {
           // Token is invalid
-          console.log("wtf")
           reactLocalStorage.clear();
         }
       }

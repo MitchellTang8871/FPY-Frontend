@@ -20,6 +20,10 @@ const ActivityLogsPage = () => {
             if (error.response.data.message) {
                 alert(error.response.data.message);
             }
+            if (error.response.status === 460) {
+                // Token is invalid
+                reactLocalStorage.clear();
+            }
             setLoading(false);
         }
 
