@@ -3,10 +3,12 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
 import qs from 'qs';
+import { Button, Modal, Input } from 'reactstrap';
 
 const AdminPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [username, setUsername] = useState("")
 
     const checkAdminStatus = async () => {
         try {
@@ -19,15 +21,19 @@ const AdminPage = () => {
                 // Continue rendering if user has admin privileges
                 setLoading(false);
                 return
+            } else {
+                window.location.href = "/";
             }
         } catch (error) {
             setError(error.response.data.message);
             if (error.response.status === 460) {
                 // Token is invalid
                 reactLocalStorage.clear();
+                window.location.href = "/";
+            } else if (error.response.status === 500) {
+                window.location.href = "/";
             }
             setLoading(false);
-            window.location.href = "/";
         }
     };
 
@@ -40,6 +46,26 @@ const AdminPage = () => {
 
         checkAdminStatus();
     }, []);
+
+    const delUser = async (username) => {
+        try {
+            setLoading(true);
+            const payload = { username: username };
+            const response = await axios.post("deluser", qs.stringify(payload), { timeout: 30000 });
+            alert(response.data.message);
+            setLoading(false);
+        } catch (error) {
+            if (error.response.data.message) {
+                alert(error.response.data.message);
+            }
+            if (error.response.status === 460) {
+                // Token is invalid
+                reactLocalStorage.clear();
+                window.location.href = "/";
+            }
+            setLoading(false);
+        }
+    }
 
 
     return (
@@ -60,6 +86,20 @@ const AdminPage = () => {
                         tuned for more features!
                     </p>
                 )}
+
+                <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, marginTop:50 }}>
+                    <div style={{whiteSpace: "nowrap"}}>Delete User:</div>
+                    <Input
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        onKeyDown={(e) => {if (e.key === "Enter") {delUser(username)}}}
+                        disabled={loading}
+                    />
+                    <Button style={{backgroundColor: "red", color: "white"}} onClick={() => delUser(username)}>
+                        Delete
+                    </Button>
+                </div>
+                <div style={{color: "red", textAlign: "left"}}>*Enter the username of the user you want to delete</div>
             </div>
         </div>
     );
