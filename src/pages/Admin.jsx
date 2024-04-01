@@ -43,7 +43,6 @@ const AdminPage = () => {
         }
 
         axios.defaults.headers.common.Authorization = `Token ${reactLocalStorage.get("token")}`;
-
         checkAdminStatus();
     }, []);
 
