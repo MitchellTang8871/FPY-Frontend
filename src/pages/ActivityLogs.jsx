@@ -3,16 +3,21 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
 import qs from 'qs';
+import { Input } from 'reactstrap';
 
 const ActivityLogsPage = () => {
     const [logData, setLogData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [dropDown, setDropDown] = useState(false);
+    const [filterFor, setFilterFor] = useState("All");
+    const [filteredData, setFilteredData] = useState([]);
 
     const getActivityLogs = async () => {
         try{
             setLoading(true);
             const response = await axios.get("getactivitylogs", {timeout:30000});
             setLogData(response.data);
+            setFilteredData(response.data);
             setLoading(false);
         } catch (error) {
             console.log(error);
@@ -38,6 +43,15 @@ const ActivityLogsPage = () => {
         getActivityLogs();
     }, []);
 
+    useEffect(() => {
+        if (filterFor === "") {
+            setFilteredData(logData);
+        } else {
+            const filterValue = filterFor.toLowerCase(); // Convert filterFor to lowercase
+            setFilteredData(logData.filter((log) => log.action.toLowerCase().startsWith(filterValue))); // Convert log.action to lowercase
+        }
+    }, [filterFor]);
+
     const formatDateTime = (timestamp) => {
         const date = new Date(timestamp);
         const day = String(date.getDate()).padStart(2, '0');
@@ -52,9 +66,6 @@ const ActivityLogsPage = () => {
         return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
     };
 
-
-
-
     return (
         <div className="ActivityLogs">
             {loading && (
@@ -68,8 +79,12 @@ const ActivityLogsPage = () => {
                     <div style={{ width: '70%' }}>Action</div>
                     <div style={{ width: '30%' }}>Date & Time</div>
                 </div>
-                <div style={{overflowY:'auto', height:'95%'}}>
-                    {logData.map((activity, index) => (
+                <div style={{ display: 'flex', flexDirection: 'row', height:'5%', width: '100%', alignItems:'center', justifyContent:'center', gap:20, padding: 20 }}>
+                    <div style={{ whiteSpace: 'nowrap' }}>Filter For: </div>
+                    <Input style={{ width: '60%' }} onChange={(e) => setFilterFor(e.target.value)}/>
+                </div>
+                <div style={{overflowY:'auto', height:'90%'}}>
+                    {filteredData.map((activity, index) => (
                         <div key={index} style={{ display: 'flex', flexDirection: 'row', paddingTop:10, alignItems:'center', gap:20 }}>
                             <div style={{ width: '70%', textAlign: 'left' }}>
                                 <div style={{fontWeight:'bold'}}>{activity.action}</div>

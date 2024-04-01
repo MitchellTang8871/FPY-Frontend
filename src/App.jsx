@@ -14,7 +14,7 @@ import LoginPage2 from './pages/Login2';
 
 function App() {
     useEffect(() => {
-        // axios.defaults.baseURL = `https://ilwuvjed3x.ap.loclx.io`
+        // axios.defaults.baseURL = `https://89xuz5i6rp.ap.loclx.io`
         axios.defaults.baseURL = `http://localhost:8000`
         axios.defaults.timeout = 15000
     }, []);
