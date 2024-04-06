@@ -112,7 +112,7 @@ const resendOtp = async () => {
             </a>
           </div>
           <div className="navbar-right">
-            <li className="navbar-menu-item">
+            {/* <li className="navbar-menu-item">
               <a href="#" className="navbar-menu-link" onClick={()=>notAvailable()}>
                 Timetable
               </a>
@@ -121,7 +121,7 @@ const resendOtp = async () => {
               <a href="#" className="navbar-menu-link" onClick={()=>notAvailable()}>
                 Attendance
               </a>
-            </li>
+            </li> */}
             <li className="navbar-menu-item">
               <a href="#" className="navbar-menu-link" onClick={()=>setOtpModal(true)}>
                 Exam Results
