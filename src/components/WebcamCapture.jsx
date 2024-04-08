@@ -122,7 +122,7 @@ const WebcamCapture = ({ onCapture, onCancel, onReload, onBack, back=false, live
               back&&
                 <Button onClick={()=>onBack()}>Back</Button>
             }
-            <div>
+            <div style={{marginTop: 10}}>
               <Webcam
                 height={height}
                 width={width}
