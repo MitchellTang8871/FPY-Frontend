@@ -27,8 +27,6 @@ function App() {
                 <Route path="/home" element={<HomePage/>}/>
                 <Route path="/activitylogs" element={<ActivityLogsPage/>}/>
                 <Route path="/emscard" element={<EMSCardPage/>}/>
-                <Route path="/admin" element={<AdminPage/>}/>
-                {/* <Route path="/login2" element={<LoginPage2/>}/> */}
             </Routes>
         </BrowserRouter>
     )
