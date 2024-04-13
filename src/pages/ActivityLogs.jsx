@@ -75,13 +75,13 @@ const ActivityLogsPage = () => {
             )}
             <Navbar />
             <div className='content-container'>
-                <div style={{ display: 'flex', flexDirection: 'row', height:'5%', alignItems:'center', gap:20 }}>
-                    <div style={{ width: '70%' }}>Action</div>
-                    <div style={{ width: '30%' }}>Date & Time</div>
-                </div>
                 <div style={{ display: 'flex', flexDirection: 'row', height:'5%', width: '100%', alignItems:'center', justifyContent:'center', gap:20, padding: 20 }}>
                     <div style={{ whiteSpace: 'nowrap' }}>Filter For: </div>
                     <Input style={{ width: '60%' }} onChange={(e) => setFilterFor(e.target.value)}/>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'row', height:'5%', alignItems:'center', gap:20 }}>
+                    <div style={{ width: '70%' }}>Action</div>
+                    <div style={{ width: '30%' }}>Date & Time</div>
                 </div>
                 <div style={{overflowY:'auto', height:'90%'}}>
                     {filteredData.map((activity, index) => (

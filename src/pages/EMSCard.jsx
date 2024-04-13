@@ -218,6 +218,7 @@ const EMSCardPage = () => {
                 {
                     receiver === null ? (
                         <div style={{display:"flex", flexDirection:"column", margin:10, gap:10  }}>
+                            <div style={{textAlign:"center", fontSize:"1.2rem"}}>Receiver</div>
                             <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap:5, height:"5%"}}>
                                 <Input
                                     value={searchTerm}

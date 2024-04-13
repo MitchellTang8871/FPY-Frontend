@@ -93,7 +93,7 @@ const resendOtp = async () => {
               onKeyDown={(e) => e.key === "Enter" && getResults()}
             />
             <Button disabled={loading || cooldown} onClick={() => resendOtp()}>
-              {otpSent ? 'Resend' : 'Send'}
+              {otpSent ? 'Resend' : 'Send OTP'}
             </Button>
           </div>
           <div style={{textAlign:"center"}}>
