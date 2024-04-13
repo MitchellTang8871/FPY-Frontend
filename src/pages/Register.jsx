@@ -64,7 +64,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div>
+    <div style={{marginBottom:50}}>
       {loading && (
         <div className="overlay">
           <div className="spinner"></div>
