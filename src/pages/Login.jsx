@@ -92,7 +92,6 @@ const LoginPage = () => {
       // Redirect to /home
       navigate("/home");
     } catch (error) {
-      // Handle errors, you might want to show an error message to the user
       console.log(error);
       console.log(error.response.data.message);
       if (error.response.data.message) {
